@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Expense Tracker Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Demo
+                    </a>
+                    <div class="text-2xl font-bold text-orange-600">
+                        <i class="fas fa-chart-pie mr-2"></i>Analytics
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                        <i class="fas fa-download mr-2"></i>Export Report
+                    </button>
+                    <span class="text-sm text-gray-600">Welcome, John Doe</span>
+                    <button class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Time Period Selector -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-gray-800">Analytics Overview</h2>
+                <div class="flex items-center space-x-4">
+                    <select class="p-2 border border-gray-300 rounded-lg">
+                        <option>Last 6 Months</option>
+                        <option>Last 3 Months</option>
+                        <option>Last Month</option>
+                        <option>This Year</option>
+                        <option>Custom Range</option>
+                    </select>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-calendar mr-2"></i>Date Range
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-blue-600 text-white p-3 rounded-full">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Total Spending</p>
+                        <p class="text-2xl font-bold text-gray-800">$2,847.50</p>
+                        <p class="text-xs text-green-600">+12.5% vs last period</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-green-600 text-white p-3 rounded-full">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Average Daily</p>
+                        <p class="text-2xl font-bold text-gray-800">$60.59</p>
+                        <p class="text-xs text-red-600">-5.2% vs last period</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-purple-600 text-white p-3 rounded-full">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Total Expenses</p>
+                        <p class="text-2xl font-bold text-gray-800">47</p>
+                        <p class="text-xs text-green-600">+8 vs last period</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-orange-600 text-white p-3 rounded-full">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Budget Remaining</p>
+                        <p class="text-2xl font-bold text-gray-800">$1,152.50</p>
+                        <p class="text-xs text-green-600">On track</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Spending Trend -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Spending Trend</h3>
+                <canvas id="trendChart" width="400" height="300"></canvas>
+            </div>
+            
+            <!-- Category Breakdown -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Spending by Category</h3>
+                <canvas id="categoryChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- Additional Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Weekly Breakdown -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Weekly Spending Pattern</h3>
+                <canvas id="weeklyChart" width="400" height="300"></canvas>
+            </div>
+            
+            <!-- Monthly Comparison -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Monthly Comparison</h3>
+                <canvas id="monthlyChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- Insights Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Top Spending Categories -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Top Spending Categories</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-blue-600 rounded-full mr-3"></div>
+                            <span class="text-sm">Food & Dining</span>
+                        </div>
+                        <span class="text-sm font-medium">$996.63 (35%)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-600 rounded-full mr-3"></div>
+                            <span class="text-sm">Transportation</span>
+                        </div>
+                        <span class="text-sm font-medium">$711.88 (25%)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-purple-600 rounded-full mr-3"></div>
+                            <span class="text-sm">Shopping</span>
+                        </div>
+                        <span class="text-sm font-medium">$569.50 (20%)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-orange-600 rounded-full mr-3"></div>
+                            <span class="text-sm">Entertainment</span>
+                        </div>
+                        <span class="text-sm font-medium">$427.13 (15%)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-red-600 rounded-full mr-3"></div>
+                            <span class="text-sm">Utilities</span>
+                        </div>
+                        <span class="text-sm font-medium">$142.36 (5%)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Spending Insights -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Spending Insights</h3>
+                <div class="space-y-4">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-arrow-up text-blue-600 mr-3"></i>
+                            <div>
+                                <p class="font-medium text-blue-800">Highest Spending Day</p>
+                                <p class="text-sm text-blue-700">Friday - $450 average</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-line text-green-600 mr-3"></i>
+                            <div>
+                                <p class="font-medium text-green-800">Most Frequent Category</p>
+                                <p class="text-sm text-green-700">Food & Dining - 35% of total</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar text-orange-600 mr-3"></i>
+                            <div>
+                                <p class="font-medium text-orange-800">Monthly Average</p>
+                                <p class="text-sm text-orange-700">$1,847 - Last 3 months</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Budget Alerts -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Budget Alerts</h3>
+                <div class="space-y-3">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+                            <div>
+                                <p class="font-medium text-yellow-800">Transportation</p>
+                                <p class="text-xs text-yellow-700">90% of budget used</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-times-circle text-red-600 mr-2"></i>
+                            <div>
+                                <p class="font-medium text-red-800">Shopping</p>
+                                <p class="text-xs text-red-700">Budget exceeded by $50</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                            <div>
+                                <p class="font-medium text-green-800">Food & Dining</p>
+                                <p class="text-xs text-green-700">Within budget limits</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Options -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold mb-4">Export Reports</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-file-excel text-2xl mb-2"></i>
+                    <p class="font-medium">Excel Export</p>
+                    <p class="text-sm opacity-90">Data for further analysis</p>
+                </button>
+                <button class="bg-purple-600 text-white p-4 rounded-lg hover:bg-purple-700 transition-colors">
+                    <i class="fas fa-chart-bar text-2xl mb-2"></i>
+                    <p class="font-medium">Custom Charts</p>
+                    <p class="text-sm opacity-90">Interactive visualizations</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Spending Trend Chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Monthly Spending',
+                    data: [1200, 1900, 1600, 2100, 1800, 2847],
+                    borderColor: '#3B82F6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Food & Dining', 'Transportation', 'Shopping', 'Entertainment', 'Utilities'],
+                datasets: [{
+                    data: [35, 25, 20, 15, 5],
+                    backgroundColor: ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#EF4444'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+
+        // Weekly Chart
+        const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        new Chart(weeklyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Daily Spending',
+                    data: [45, 38, 52, 41, 67, 89, 34],
+                    backgroundColor: '#10B981'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Monthly Comparison Chart
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'This Year',
+                    data: [1200, 1900, 1600, 2100, 1800, 2847],
+                    backgroundColor: '#3B82F6'
+                }, {
+                    label: 'Last Year',
+                    data: [1100, 1700, 1500, 1900, 1600, 2400],
+                    backgroundColor: '#9CA3AF'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

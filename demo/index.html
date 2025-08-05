@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker - UI Demonstration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .receipt-upload-area {
+            border: 2px dashed #cbd5e0;
+            transition: all 0.3s ease;
+        }
+        .receipt-upload-area:hover {
+            border-color: #667eea;
+            background-color: #f7fafc;
+        }
+        .receipt-upload-area.dragover {
+            border-color: #667eea;
+            background-color: #edf2f7;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <div class="text-2xl font-bold text-blue-600">
+                        <i class="fas fa-receipt mr-2"></i>Expense Tracker
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </button>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-user-plus mr-2"></i>Register
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Expense Tracker UI</h1>
+            <p class="text-gray-600 text-lg">Interactive demonstration of all UI components and features</p>
+        </div>
+
+        <!-- Feature Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <!-- Dashboard Card -->
+            <div class="bg-white rounded-lg shadow-md card-hover p-6">
+                <div class="text-blue-600 text-3xl mb-4">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Dashboard</h3>
+                <p class="text-gray-600 mb-4">Overview with spending statistics and quick actions</p>
+                <button onclick="showDashboard()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    View Demo
+                </button>
+            </div>
+
+            <!-- Receipt Scanner Card -->
+            <div class="bg-white rounded-lg shadow-md card-hover p-6">
+                <div class="text-green-600 text-3xl mb-4">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Receipt Scanner</h3>
+                <p class="text-gray-600 mb-4">OCR-powered receipt scanning and data extraction</p>
+                <button onclick="showReceiptScanner()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    View Demo
+                </button>
+            </div>
+
+            <!-- Expense Management Card -->
+            <div class="bg-white rounded-lg shadow-md card-hover p-6">
+                <div class="text-purple-600 text-3xl mb-4">
+                    <i class="fas fa-list"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Expense Management</h3>
+                <p class="text-gray-600 mb-4">Add, edit, and manage expenses with categories</p>
+                <button onclick="showExpenseManagement()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                    View Demo
+                </button>
+            </div>
+
+            <!-- Analytics Card -->
+            <div class="bg-white rounded-lg shadow-md card-hover p-6">
+                <div class="text-orange-600 text-3xl mb-4">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Analytics</h3>
+                <p class="text-gray-600 mb-4">Detailed spending analysis and insights</p>
+                <button onclick="showAnalytics()" class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                    View Demo
+                </button>
+            </div>
+
+            <!-- Budget Tracking Card -->
+            <div class="bg-white rounded-lg shadow-md card-hover p-6">
+                <div class="text-red-600 text-3xl mb-4">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Budget Tracking</h3>
+                <p class="text-gray-600 mb-4">Set budgets and track spending limits</p>
+                <button onclick="showBudgetTracking()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                    View Demo
+                </button>
+            </div>
+
+            <!-- Settings Card -->
+            <div class="bg-white rounded-lg shadow-md card-hover p-6">
+                <div class="text-gray-600 text-3xl mb-4">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Settings</h3>
+                <p class="text-gray-600 mb-4">User preferences and account management</p>
+                <button onclick="showSettings()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    View Demo
+                </button>
+            </div>
+
+            <!-- Authentication Card -->
+            <div class="bg-white rounded-lg shadow-md card-hover p-6">
+                <div class="text-indigo-600 text-3xl mb-4">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Authentication</h3>
+                <p class="text-gray-600 mb-4">Login and registration with security features</p>
+                <div class="flex space-x-2">
+                    <a href="login.html" class="bg-indigo-600 text-white px-3 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                        Login
+                    </a>
+                    <a href="register.html" class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
+                        Register
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mobile Experience Card -->
+            <div class="bg-white rounded-lg shadow-md card-hover p-6">
+                <div class="text-purple-600 text-3xl mb-4">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Mobile Experience</h3>
+                <p class="text-gray-600 mb-4">Responsive design and mobile-optimized interface</p>
+                <a href="mobile-demo.html" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors inline-block">
+                    View Demo
+                </a>
+            </div>
+        </div>
+
+        <!-- Demo Container -->
+        <div id="demo-container" class="bg-white rounded-lg shadow-lg p-8 min-h-96">
+            <div class="text-center text-gray-500">
+                <i class="fas fa-arrow-up text-4xl mb-4"></i>
+                <p class="text-xl">Select a feature above to view its demonstration</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function showDashboard() {
+            const container = document.getElementById('demo-container');
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-blue-600 text-white p-3 rounded-full">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">Total Spending</p>
+                                    <p class="text-2xl font-bold text-gray-800">$2,847.50</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-green-600 text-white p-3 rounded-full">
+                                    <i class="fas fa-receipt"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">Total Expenses</p>
+                                    <p class="text-2xl font-bold text-gray-800">47</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-6 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-orange-600 text-white p-3 rounded-full">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">Daily Average</p>
+                                    <p class="text-2xl font-bold text-gray-800">$60.59</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Spending by Category</h3>
+                            <canvas id="categoryChart" width="400" height="200"></canvas>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Recent Expenses</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="bg-blue-600 text-white p-2 rounded-full mr-3">
+                                            <i class="fas fa-utensils"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Grocery Shopping</p>
+                                            <p class="text-sm text-gray-600">Today</p>
+                                        </div>
+                                    </div>
+                                    <p class="font-semibold text-red-600">-$85.30</p>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="bg-green-600 text-white p-2 rounded-full mr-3">
+                                            <i class="fas fa-gas-pump"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Gas Station</p>
+                                            <p class="text-sm text-gray-600">Yesterday</p>
+                                        </div>
+                                    </div>
+                                    <p class="font-semibold text-red-600">-$45.00</p>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="bg-purple-600 text-white p-2 rounded-full mr-3">
+                                            <i class="fas fa-shopping-bag"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Online Shopping</p>
+                                            <p class="text-sm text-gray-600">2 days ago</p>
+                                        </div>
+                                    </div>
+                                    <p class="font-semibold text-red-600">-$120.00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Initialize chart
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Food & Dining', 'Transportation', 'Shopping', 'Entertainment', 'Utilities'],
+                    datasets: [{
+                        data: [35, 25, 20, 15, 5],
+                        backgroundColor: ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#EF4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function showReceiptScanner() {
+            const container = document.getElementById('demo-container');
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Receipt Scanner</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Upload Receipt</h3>
+                            <div class="receipt-upload-area p-8 text-center rounded-lg">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-lg font-medium text-gray-700 mb-2">Drop your receipt here</p>
+                                <p class="text-gray-500 mb-4">or click to browse</p>
+                                <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Choose File
+                                </button>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-sm text-gray-600">Supported formats: JPEG, PNG, GIF, BMP</p>
+                                <p class="text-sm text-gray-600">Maximum file size: 10MB</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Extracted Data</h3>
+                            <div class="bg-gray-50 p-6 rounded-lg">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Merchant</label>
+                                        <input type="text" value="Walmart Supercenter" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                                        <input type="text" value="$85.30" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                        <input type="date" value="2024-01-15" class="w-full p-2 border border-gray-300 rounded-lg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                        <select class="w-full p-2 border border-gray-300 rounded-lg">
+                                            <option>Food & Dining</option>
+                                            <option>Shopping</option>
+                                            <option>Transportation</option>
+                                            <option>Entertainment</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                        <textarea class="w-full p-2 border border-gray-300 rounded-lg" rows="3">Grocery shopping - vegetables, fruits, dairy products</textarea>
+                                    </div>
+                                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+                                        Create Expense
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showExpenseManagement() {
+            const container = document.getElementById('demo-container');
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Expense Management</h2>
+                    <div class="mb-6">
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Add New Expense
+                        </button>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                        <div class="p-4 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">All Expenses</h3>
+                                <div class="flex space-x-2">
+                                    <input type="text" placeholder="Search expenses..." class="px-3 py-1 border border-gray-300 rounded-lg text-sm">
+                                    <select class="px-3 py-1 border border-gray-300 rounded-lg text-sm">
+                                        <option>All Categories</option>
+                                        <option>Food & Dining</option>
+                                        <option>Transportation</option>
+                                        <option>Shopping</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-01-15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Grocery Shopping</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                Food & Dining
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">-$85.30</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                                            <button class="text-red-600 hover:text-red-900">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-01-14</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Gas Station</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                Transportation
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">-$45.00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                                            <button class="text-red-600 hover:text-red-900">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-01-13</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Online Shopping</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                Shopping
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">-$120.00</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                                            <button class="text-red-600 hover:text-red-900">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showAnalytics() {
+            const container = document.getElementById('demo-container');
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Analytics & Insights</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Spending Trends</h3>
+                            <canvas id="trendChart" width="400" height="200"></canvas>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Monthly Breakdown</h3>
+                            <canvas id="monthlyChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <h3 class="text-lg font-semibold mb-4">Spending Insights</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <div class="flex items-center">
+                                    <i class="fas fa-arrow-up text-blue-600 mr-2"></i>
+                                    <span class="text-sm font-medium text-blue-800">Highest Spending Day</span>
+                                </div>
+                                <p class="text-2xl font-bold text-blue-900 mt-2">Friday</p>
+                                <p class="text-sm text-blue-700">$450 average</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <div class="flex items-center">
+                                    <i class="fas fa-chart-line text-green-600 mr-2"></i>
+                                    <span class="text-sm font-medium text-green-800">Most Frequent Category</span>
+                                </div>
+                                <p class="text-2xl font-bold text-green-900 mt-2">Food & Dining</p>
+                                <p class="text-sm text-green-700">35% of total spending</p>
+                            </div>
+                            <div class="bg-orange-50 p-4 rounded-lg">
+                                <div class="flex items-center">
+                                    <i class="fas fa-calendar text-orange-600 mr-2"></i>
+                                    <span class="text-sm font-medium text-orange-800">Monthly Average</span>
+                                </div>
+                                <p class="text-2xl font-bold text-orange-900 mt-2">$1,847</p>
+                                <p class="text-sm text-orange-700">Last 3 months</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Initialize charts
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Monthly Spending',
+                        data: [1200, 1900, 1600, 2100, 1800, 2400],
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+            new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Weekly Spending',
+                        data: [450, 380, 520, 410],
+                        backgroundColor: '#10B981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function showBudgetTracking() {
+            const container = document.getElementById('demo-container');
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Budget Tracking</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Current Budgets</h3>
+                            <div class="space-y-4">
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-medium">Food & Dining</h4>
+                                        <span class="text-sm text-gray-500">$500 / $600</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-600 h-2 rounded-full" style="width: 83%"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">$100 remaining</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-medium">Transportation</h4>
+                                        <span class="text-sm text-gray-500">$180 / $200</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-yellow-600 h-2 rounded-full" style="width: 90%"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">$20 remaining</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="font-medium">Shopping</h4>
+                                        <span class="text-sm text-gray-500">$250 / $200</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-red-600 h-2 rounded-full" style="width: 125%"></div>
+                                    </div>
+                                    <p class="text-sm text-red-600 mt-1">$50 over budget</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Budget Alerts</h3>
+                            <div class="space-y-3">
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-exclamation-triangle text-yellow-600 mr-3"></i>
+                                        <div>
+                                            <p class="font-medium text-yellow-800">Transportation budget warning</p>
+                                            <p class="text-sm text-yellow-700">You've used 90% of your transportation budget</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-times-circle text-red-600 mr-3"></i>
+                                        <div>
+                                            <p class="font-medium text-red-800">Shopping budget exceeded</p>
+                                            <p class="text-sm text-red-700">You've exceeded your shopping budget by $50</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-600 mr-3"></i>
+                                        <div>
+                                            <p class="font-medium text-green-800">Food budget on track</p>
+                                            <p class="text-sm text-green-700">You're within your food budget limits</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    <i class="fas fa-plus mr-2"></i>Add New Budget
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showSettings() {
+            const container = document.getElementById('demo-container');
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Settings</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Profile Settings</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                    <input type="text" value="John" class="w-full p-2 border border-gray-300 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                    <input type="text" value="Doe" class="w-full p-2 border border-gray-300 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input type="email" value="john.doe@example.com" class="w-full p-2 border border-gray-300 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Default Currency</label>
+                                    <select class="w-full p-2 border border-gray-300 rounded-lg">
+                                        <option>USD - US Dollar</option>
+                                        <option>EUR - Euro</option>
+                                        <option>GBP - British Pound</option>
+                                        <option>JPY - Japanese Yen</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Preferences</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium">Email Notifications</p>
+                                        <p class="text-sm text-gray-600">Receive budget alerts via email</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium">Push Notifications</p>
+                                        <p class="text-sm text-gray-600">Receive real-time alerts</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium">Auto-categorization</p>
+                                        <p class="text-sm text-gray-600">Automatically categorize expenses</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html> 

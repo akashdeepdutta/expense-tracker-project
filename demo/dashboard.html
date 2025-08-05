@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Expense Tracker Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Demo
+                    </a>
+                    <div class="text-2xl font-bold text-blue-600">
+                        <i class="fas fa-chart-line mr-2"></i>Dashboard
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Welcome, John Doe</span>
+                    <button class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-blue-600 text-white p-3 rounded-full">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Total Spending</p>
+                        <p class="text-2xl font-bold text-gray-800">$2,847.50</p>
+                        <p class="text-xs text-green-600">+12.5% from last month</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-green-600 text-white p-3 rounded-full">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Total Expenses</p>
+                        <p class="text-2xl font-bold text-gray-800">47</p>
+                        <p class="text-xs text-green-600">+8 from last month</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-orange-600 text-white p-3 rounded-full">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Daily Average</p>
+                        <p class="text-2xl font-bold text-gray-800">$60.59</p>
+                        <p class="text-xs text-red-600">-5.2% from last month</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="bg-purple-600 text-white p-3 rounded-full">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Budget Remaining</p>
+                        <p class="text-2xl font-bold text-gray-800">$1,152.50</p>
+                        <p class="text-xs text-green-600">On track</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Spending by Category -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Spending by Category</h3>
+                <canvas id="categoryChart" width="400" height="300"></canvas>
+            </div>
+            
+            <!-- Monthly Trend -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Monthly Spending Trend</h3>
+                <canvas id="trendChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Expenses and Quick Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Recent Expenses -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold">Recent Expenses</h3>
+                    <a href="#" class="text-blue-600 hover:text-blue-800 text-sm">View All</a>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="bg-blue-600 text-white p-2 rounded-full mr-3">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Grocery Shopping</p>
+                                <p class="text-sm text-gray-600">Today • Walmart</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-red-600">-$85.30</p>
+                            <p class="text-xs text-gray-500">Food & Dining</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="bg-green-600 text-white p-2 rounded-full mr-3">
+                                <i class="fas fa-gas-pump"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Gas Station</p>
+                                <p class="text-sm text-gray-600">Yesterday • Shell</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-red-600">-$45.00</p>
+                            <p class="text-xs text-gray-500">Transportation</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="bg-purple-600 text-white p-2 rounded-full mr-3">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Online Shopping</p>
+                                <p class="text-sm text-gray-600">2 days ago • Amazon</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-red-600">-$120.00</p>
+                            <p class="text-xs text-gray-500">Shopping</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="bg-orange-600 text-white p-2 rounded-full mr-3">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Movie Tickets</p>
+                                <p class="text-sm text-gray-600">3 days ago • AMC</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-red-600">-$32.50</p>
+                            <p class="text-xs text-gray-500">Entertainment</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+                <div class="space-y-3">
+                    <button class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>Add Expense
+                    </button>
+                    <button class="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">
+                        <i class="fas fa-camera mr-2"></i>Scan Receipt
+                    </button>
+                    <button class="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center">
+                        <i class="fas fa-chart-pie mr-2"></i>View Analytics
+                    </button>
+                    <button class="w-full bg-orange-600 text-white p-3 rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center">
+                        <i class="fas fa-piggy-bank mr-2"></i>Set Budget
+                    </button>
+                </div>
+                
+                <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-triangle text-yellow-600 mr-3"></i>
+                        <div>
+                            <p class="font-medium text-yellow-800">Budget Alert</p>
+                            <p class="text-sm text-yellow-700">You're approaching your shopping budget limit</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Food & Dining', 'Transportation', 'Shopping', 'Entertainment', 'Utilities'],
+                datasets: [{
+                    data: [35, 25, 20, 15, 5],
+                    backgroundColor: ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#EF4444'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+
+        // Trend Chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Monthly Spending',
+                    data: [1200, 1900, 1600, 2100, 1800, 2847],
+                    borderColor: '#3B82F6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
