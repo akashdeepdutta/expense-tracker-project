@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker with Receipt Scanning - Design Document</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .version-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .version-table th, .version-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .version-table th {
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3, h4 {
+            color: #2563eb;
+            margin-top: 30px;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+        h3 {
+            font-size: 1.4em;
+            color: #374151;
+        }
+        .architecture-diagram {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .code-block {
+            background-color: #f3f4f6;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .risk-high { color: #dc2626; }
+        .risk-medium { color: #ea580c; }
+        .risk-low { color: #059669; }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Expense Tracker with Receipt Scanning</h1>
+        <h2>System Design Document</h2>
+        <p><strong>Author:</strong> Development Team</p>
+        <p><strong>Date:</strong> August 2025</p>
+        <p><strong>Version:</strong> 1.0</p>
+    </div>
+
+    <table class="version-table">
+        <thead>
+            <tr>
+                <th>Version</th>
+                <th>Date</th>
+                <th>Author</th>
+                <th>Changes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>0.1</td>
+                <td>August 2025</td>
+                <td>Development Team</td>
+                <td>Initial design document</td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr>
+                <td>1.0</td>
+                <td>August 2025</td>
+                <td>Development Architect</td>
+                <td>Design document Baselined</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>1. Executive Summary</h2>
+    <p>The Expense Tracker with Receipt Scanning is a comprehensive expense management application designed to streamline personal and business expense tracking through automated receipt processing, intelligent categorization, and detailed analytics. The system leverages OCR (Optical Character Recognition) technology to extract expense data from receipt images, providing users with an efficient and accurate expense management solution.</p>
+
+    <h2>2. Purpose and Scope</h2>
+    
+    <h3>2.1 System Purpose</h3>
+    <p>The primary purpose of this system is to:</p>
+    <ul>
+        <li>Automate expense data entry through receipt scanning</li>
+        <li>Provide intelligent expense categorization and organization</li>
+        <li>Offer comprehensive spending analytics and reporting</li>
+        <li>Support multi-currency expense tracking</li>
+        <li>Enable budget monitoring and alerts</li>
+        <li>Facilitate tax preparation and reimbursement processes</li>
+    </ul>
+
+    <h3>2.2 Goals</h3>
+    <ul>
+        <li>Reduce manual data entry by 90% through OCR automation</li>
+        <li>Provide 95% accuracy in expense data extraction</li>
+        <li>Support real-time expense tracking and categorization</li>
+        <li>Enable comprehensive financial reporting and analytics</li>
+        <li>Ensure secure and compliant data handling</li>
+    </ul>
+
+    <h3>2.3 Non-Goals</h3>
+    <ul>
+        <li>Bank account integration (Phase 2 feature)</li>
+        <li>Mobile application development (Phase 3 feature)</li>
+        <li>Advanced AI-powered insights (Phase 3 feature)</li>
+        <li>Multi-tenant enterprise features</li>
+    </ul>
+
+    <h3>2.4 Stakeholders</h3>
+    <ul>
+        <li><strong>Primary Users:</strong> Individual users, small business owners, freelancers</li>
+        <li><strong>Secondary Users:</strong> Accountants, financial advisors</li>
+        <li><strong>Technical Stakeholders:</strong> Development team, DevOps, QA</li>
+        <li><strong>Business Stakeholders:</strong> Product managers, business analysts</li>
+    </ul>
+
+    <h2>3. Background and Context</h2>
+    
+    <h3>3.1 Problem Statement</h3>
+    <p>Traditional expense tracking methods are time-consuming, error-prone, and inefficient. Manual data entry from receipts is tedious and often leads to incomplete or inaccurate expense records. Users need a solution that can:</p>
+    <ul>
+        <li>Automatically extract data from receipt images</li>
+        <li>Organize expenses by categories and tags</li>
+        <li>Provide insights into spending patterns</li>
+        <li>Support budget planning and monitoring</li>
+        <li>Generate reports for tax and reimbursement purposes</li>
+    </ul>
+
+    <h3>3.2 Business Context</h3>
+    <p>The application addresses the growing need for digital expense management solutions in an increasingly paperless business environment. With the rise of remote work and digital transactions, there's a significant demand for automated expense tracking tools that can handle various receipt formats and provide meaningful insights.</p>
+
+    <h2>4. Requirements</h2>
+    
+    <h3>4.1 Functional Requirements</h3>
+    
+    <h4>4.1.1 User Management</h4>
+    <ul>
+        <li>User registration and authentication</li>
+        <li>Profile management with default currency settings</li>
+        <li>Password reset and account recovery</li>
+    </ul>
+
+    <h4>4.1.2 Receipt Scanning</h4>
+    <ul>
+        <li>Upload receipt images (JPEG, PNG, GIF, BMP)</li>
+        <li>Automatic text extraction using OCR</li>
+        <li>Data validation and confidence scoring</li>
+        <li>Manual correction of extracted data</li>
+    </ul>
+
+    <h4>4.1.3 Expense Management</h4>
+    <ul>
+        <li>Create, read, update, delete expenses</li>
+        <li>Categorize expenses with custom categories</li>
+        <li>Add tags and descriptions</li>
+        <li>Mark expenses as reimbursable</li>
+        <li>Filter and search expenses</li>
+    </ul>
+
+    <h4>4.1.4 Analytics and Reporting</h4>
+    <ul>
+        <li>Spending by category analysis</li>
+        <li>Monthly and yearly spending trends</li>
+        <li>Budget vs actual spending</li>
+        <li>Export reports in CSV format</li>
+    </ul>
+
+    <h3>4.2 Non-Functional Requirements</h3>
+    
+    <h4>4.2.1 Performance</h4>
+    <ul>
+        <li>OCR processing time: < 10 seconds per receipt</li>
+        <li>API response time: < 2 seconds for 95% of requests</li>
+        <li>Support for concurrent users: 100+</li>
+    </ul>
+
+    <h4>4.2.2 Security</h4>
+    <ul>
+        <li>JWT-based authentication</li>
+        <li>Password hashing with BCrypt</li>
+        <li>HTTPS encryption for all communications</li>
+        <li>Input validation and sanitization</li>
+    </ul>
+
+    <h4>4.2.3 Scalability</h4>
+    <ul>
+        <li>Horizontal scaling capability</li>
+        <li>Database optimization for large datasets</li>
+        <li>CDN integration for static assets</li>
+    </ul>
+
+    <h2>5. Architecture and Design</h2>
+    
+    <h3>5.1 High-Level Architecture</h3>
+    <div class="architecture-diagram">
+        <p><strong>System Architecture Overview</strong></p>
+        <pre>
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   React Frontend│    │  Spring Boot    │    │   H2 Database   │
+│                 │    │   Backend       │    │                 │
+│ • Dashboard     │◄──►│ • REST API      │◄──►│ • In-Memory     │
+│ • Receipt Scanner│    │ • OCR Service   │    │ • JPA/Hibernate │
+│ • Analytics     │    │ • Business Logic│    │ • ACID Compliant│
+│ • Settings      │    │ • Security      │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+        │                       │                       │
+        │                       │                       │
+        ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   External      │    │   File Storage  │    │   Monitoring    │
+│   Services      │    │                 │    │                 │
+│ • Tesseract OCR │    │ • Receipt Images│    │ • Logging       │
+│ • Exchange Rates│    │ • User Uploads  │    │ • Metrics       │
+│ • Email Service │    │ • Backups       │    │ • Alerts        │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+        </pre>
+    </div>
+
+    <h3>5.2 System Diagrams Overview</h3>
+    <p>The system design includes several key diagrams to illustrate the architecture, user interactions, and data flow:</p>
+    <ul>
+        <li><strong>Use Case Diagram:</strong> Shows all system functionalities and user interactions</li>
+        <li><strong>Sequence Diagrams:</strong> Illustrate the step-by-step flow of key operations</li>
+        <li><strong>Data Flow Diagrams:</strong> Demonstrate how data moves through the system</li>
+        <li><strong>Entity Relationship Diagram:</strong> Shows database structure and relationships</li>
+    </ul>
+
+    <h3>5.3 Use Case Diagram</h3>
+    <div class="architecture-diagram">
+        <p><strong>System Use Cases</strong></p>
+        <pre>
+                    ┌─────────────────────────────────────────────────┐
+                    │              Expense Tracker System             │
+                    └─────────────────────────────────────────────────┘
+                                    │
+                    ┌───────────────┼───────────────┐
+                    │               │               │
+            ┌───────▼──────┐ ┌──────▼──────┐ ┌─────▼─────┐
+            │   User       │ │  Expense    │ │ Analytics │
+            │ Management   │ │ Management  │ │ & Reports │
+            └──────────────┘ └─────────────┘ └───────────┘
+                    │               │               │
+        ┌───────────┼───────────────┼───────────────┼───────────┐
+        │           │               │               │           │
+    ┌───▼───┐  ┌───▼───┐    ┌──────▼──────┐  ┌────▼────┐ ┌───▼───┐
+    │Login  │  │Register│    │Scan Receipt │  │Add Exp. │ │View   │
+    │Logout │  │Profile │    │Upload Image │  │Edit Exp.│ │Reports│
+    │Reset  │  │Settings│    │Extract Data │  │Delete   │ │Export │
+    │Pwd    │  │Currency│    │Create Exp.  │  │Category │ │Charts │
+    └───────┘  └───────┘    └─────────────┘  └─────────┘ └───────┘
+        │           │               │               │           │
+        └───────────┴───────────────┴───────────────┴───────────┘
+                                    │
+                            ┌───────▼──────┐
+                            │   Budget     │
+                            │ Management   │
+                            └──────────────┘
+                                    │
+                            ┌───────▼──────┐
+                            │Set Budget    │
+                            │Track Spending│
+                            │Get Alerts    │
+                            └──────────────┘
+        </pre>
+    </div>
+
+    <h3>5.4 Sequence Diagrams</h3>
+    
+    <h4>5.4.1 User Authentication Sequence</h4>
+    <div class="architecture-diagram">
+        <pre>
+User        Frontend        Backend        Database
+ │             │              │              │
+ │──Login─────►│              │              │
+ │             │──POST /auth/login──►│      │
+ │             │              │──Validate──►│
+ │             │              │◄──User Data──│
+ │             │◄──JWT Token──│              │
+ │◄──Success───│              │              │
+ │             │              │              │
+        </pre>
+    </div>
+
+    <h4>5.4.2 Receipt Scanning Sequence</h4>
+    <div class="architecture-diagram">
+        <pre>
+User        Frontend        Backend        OCR Service    Database
+ │             │              │              │              │
+ │──Upload────►│              │              │              │
+ │  Receipt    │              │              │              │
+ │             │──POST /scan──►│             │              │
+ │             │              │──Process───►│              │
+ │             │              │◄──Extracted──│              │
+ │             │              │  Data       │              │
+ │             │◄──Receipt───│              │              │
+ │             │  Data       │              │              │
+ │──Confirm───►│              │              │              │
+ │             │──POST /expenses──►│        │              │
+ │             │              │──Save──────►│              │
+ │             │              │◄──Success───│              │
+ │◄──Success───│              │              │              │
+        </pre>
+    </div>
+
+    <h4>5.4.3 Expense Management Sequence</h4>
+    <div class="architecture-diagram">
+        <pre>
+User        Frontend        Backend        Database
+ │             │              │              │
+ │──Add Exp.──►│              │              │
+ │             │──POST /expenses──►│        │
+ │             │              │──Validate──►│
+ │             │              │──Save──────►│
+ │             │              │◄──Success───│
+ │             │◄──Expense───│              │
+ │◄──Success───│              │              │
+ │             │              │              │
+ │──View Exp.──│              │              │
+ │             │──GET /expenses──►│         │
+ │             │              │──Query─────►│
+ │             │              │◄──List──────│
+ │             │◄──Expenses──│              │
+ │◄──List──────│              │              │
+        </pre>
+    </div>
+
+    <h3>5.5 Technology Stack</h3>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th>Technology</th>
+                <th>Version</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Frontend</td>
+                <td>React + TypeScript</td>
+                <td>18.2.0</td>
+                <td>User interface and interactions</td>
+            </tr>
+            <tr>
+                <td>Backend</td>
+                <td>Spring Boot</td>
+                <td>3.2.0</td>
+                <td>REST API and business logic</td>
+            </tr>
+            <tr>
+                <td>Database</td>
+                <td>MySQL</td>
+                <td>8.0.33</td>
+                <td>Persistent data storage</td>
+            </tr>
+            <tr>
+                <td>OCR</td>
+                <td>Tesseract</td>
+                <td>5.8.0</td>
+                <td>Receipt text extraction</td>
+            </tr>
+            <tr>
+                <td>Security</td>
+                <td>JWT + Spring Security</td>
+                <td>3.2.0</td>
+                <td>Authentication and authorization</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>5.6 Component Breakdown</h3>
+    
+    <h4>5.6.1 Frontend Components</h4>
+    <ul>
+        <li><strong>Dashboard:</strong> Overview, statistics, quick actions</li>
+        <li><strong>ReceiptScanner:</strong> Image upload, OCR processing, data extraction</li>
+        <li><strong>ExpenseList:</strong> Expense management, filtering, search</li>
+        <li><strong>Analytics:</strong> Charts, reports, spending insights</li>
+        <li><strong>Settings:</strong> User preferences, account management</li>
+    </ul>
+
+    <h4>5.6.2 Backend Services</h4>
+    <ul>
+        <li><strong>ExpenseService:</strong> Business logic for expense management</li>
+        <li><strong>OcrService:</strong> Receipt scanning and data extraction</li>
+        <li><strong>UserService:</strong> User management and authentication</li>
+        <li><strong>AnalyticsService:</strong> Reporting and analytics</li>
+    </ul>
+
+    <h2>6. Detailed Design</h2>
+    
+    <h3>6.1 Database Schema</h3>
+    
+    <h4>6.1.1 Database Technology</h4>
+    <p>The application uses <strong>MySQL 8.0</strong> as the primary database for persistent data storage. MySQL provides:</p>
+    <ul>
+        <li><strong>ACID Compliance:</strong> Ensures data integrity and consistency</li>
+        <li><strong>Scalability:</strong> Handles large datasets and concurrent users</li>
+        <li><strong>Performance:</strong> Optimized queries with proper indexing</li>
+        <li><strong>Backup & Recovery:</strong> Robust backup and restore capabilities</li>
+        <li><strong>Security:</strong> User authentication and privilege management</li>
+    </ul>
+    
+    <h4>6.1.2 Entity Relationship Diagram (ERD)</h4>
+    <div class="architecture-diagram">
+        <pre>
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│    Users    │     │ Categories  │     │  Expenses   │
+├─────────────┤     ├─────────────┤     ├─────────────┤
+│ id (PK)     │     │ id (PK)     │     │ id (PK)     │
+│ username    │     │ name        │     │ user_id (FK)│
+│ email       │     │ description │     │ category_id │
+│ password    │     │ icon        │     │ title       │
+│ first_name  │     │ color       │     │ description │
+│ last_name   │     │ is_default  │     │ amount      │
+│ currency    │     │ user_id (FK)│     │ currency    │
+│ created_at  │     │ created_at  │     │ date        │
+│ updated_at  │     └─────────────┘     │ receipt_url │
+└─────────────┘             │           │ ocr_data    │
+        │                   │           │ location     │
+        │                   │           │ tags         │
+        │                   │           │ reimbursable │
+        │                   │           │ status       │
+        │                   │           │ created_at   │
+        │                   │           │ updated_at   │
+        │                   │           └─────────────┘
+        │                   │                   │
+        │                   │                   │
+        └───────────────────┼───────────────────┘
+                            │
+                            │
+                    ┌───────▼──────┐
+                    │   Budgets    │
+                    ├──────────────┤
+                    │ id (PK)      │
+                    │ user_id (FK) │
+                    │ category_id  │
+                    │ name         │
+                    │ amount       │
+                    │ currency     │
+                    │ period_type  │
+                    │ start_date   │
+                    │ end_date     │
+                    │ is_active    │
+                    │ created_at   │
+                    └──────────────┘
+        </pre>
+    </div>
+
+    <h4>6.1.3 Detailed Database Tables</h4>
+    
+    <p><strong>MySQL Database Configuration:</strong></p>
+    <ul>
+        <li><strong>Database Name:</strong> expensetracker</li>
+        <li><strong>Character Set:</strong> utf8mb4</li>
+        <li><strong>Collation:</strong> utf8mb4_unicode_ci</li>
+        <li><strong>Storage Engine:</strong> InnoDB (for ACID compliance)</li>
+    </ul>
+    
+    <h5>Users Table</h5>
+    <div class="code-block">
+CREATE TABLE users (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    default_currency VARCHAR(3) DEFAULT 'USD',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Indexes for performance
+    INDEX idx_users_username (username),
+    INDEX idx_users_email (email),
+    INDEX idx_users_currency (default_currency)
+);
+    </div>
+
+    <h5>Categories Table</h5>
+    <div class="code-block">
+CREATE TABLE categories (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    icon VARCHAR(50),
+    color VARCHAR(7),
+    is_default BOOLEAN DEFAULT FALSE,
+    user_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Foreign key constraint
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    
+    -- Indexes for performance
+    INDEX idx_categories_user (user_id),
+    INDEX idx_categories_default (is_default),
+    UNIQUE INDEX idx_categories_user_name (user_id, name)
+);
+    </div>
+
+    <h5>Expenses Table</h5>
+    <div class="code-block">
+CREATE TABLE expenses (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    category_id BIGINT,
+    title VARCHAR(200) NOT NULL,
+    description TEXT,
+    amount DECIMAL(15,2) NOT NULL,
+    currency_code VARCHAR(3) NOT NULL,
+    date DATE NOT NULL,
+    receipt_image_url VARCHAR(500),
+    ocr_data JSON,
+    location VARCHAR(200),
+    tags VARCHAR(500),
+    is_reimbursable BOOLEAN DEFAULT FALSE,
+    status ENUM('PENDING', 'APPROVED', 'REJECTED') DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Foreign key constraints
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+    
+    -- Indexes for performance
+    INDEX idx_expenses_user (user_id),
+    INDEX idx_expenses_category (category_id),
+    INDEX idx_expenses_date (date),
+    INDEX idx_expenses_currency (currency_code),
+    INDEX idx_expenses_status (status),
+    INDEX idx_expenses_user_date (user_id, date),
+    INDEX idx_expenses_reimbursable (is_reimbursable)
+);
+    </div>
+
+    <h5>Budgets Table</h5>
+    <div class="code-block">
+CREATE TABLE budgets (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    category_id BIGINT,
+    name VARCHAR(100) NOT NULL,
+    amount DECIMAL(15,2) NOT NULL,
+    currency_code VARCHAR(3) NOT NULL,
+    period_type ENUM('MONTHLY', 'YEARLY', 'CUSTOM') DEFAULT 'MONTHLY',
+    start_date DATE NOT NULL,
+    end_date DATE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Foreign key constraints
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+    
+    -- Indexes for performance
+    INDEX idx_budgets_user (user_id),
+    INDEX idx_budgets_category (category_id),
+    INDEX idx_budgets_active (is_active),
+    INDEX idx_budgets_period (start_date, end_date)
+);
+    </div>
+
+    <h5>Budget Alerts Table</h5>
+    <div class="code-block">
+CREATE TABLE budget_alerts (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    budget_id BIGINT NOT NULL,
+    alert_type ENUM('WARNING', 'CRITICAL', 'EXCEEDED') NOT NULL,
+    threshold_percentage DECIMAL(5,2) NOT NULL,
+    message TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Foreign key constraint
+    FOREIGN KEY (budget_id) REFERENCES budgets(id) ON DELETE CASCADE,
+    
+    -- Indexes for performance
+    INDEX idx_budget_alerts_budget (budget_id),
+    INDEX idx_budget_alerts_active (is_active)
+);
+    </div>
+
+    <h5>Currencies Table</h5>
+    <div class="code-block">
+CREATE TABLE currencies (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    code VARCHAR(3) UNIQUE NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    symbol VARCHAR(5),
+    exchange_rate DECIMAL(10,6) DEFAULT 1.0,
+    is_active BOOLEAN DEFAULT TRUE,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Indexes for performance
+    INDEX idx_currencies_code (code),
+    INDEX idx_currencies_active (is_active)
+);
+    </div>
+
+    <h5>Receipts Table</h5>
+    <div class="code-block">
+CREATE TABLE receipts (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    expense_id BIGINT NOT NULL,
+    image_url VARCHAR(500) NOT NULL,
+    ocr_text TEXT,
+    ocr_confidence DECIMAL(5,2),
+    merchant_name VARCHAR(200),
+    total_amount DECIMAL(15,2),
+    tax_amount DECIMAL(15,2),
+    date_from_receipt DATE,
+    items JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Foreign key constraint
+    FOREIGN KEY (expense_id) REFERENCES expenses(id) ON DELETE CASCADE,
+    
+    -- Indexes for performance
+    INDEX idx_receipts_expense (expense_id),
+    INDEX idx_receipts_merchant (merchant_name),
+    INDEX idx_receipts_date (date_from_receipt)
+);
+    </div>
+    </div>
+
+    <h4>6.1.3 Database Constraints and Rules</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Constraint Type</th>
+                <th>Table</th>
+                <th>Rule</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Primary Key</td>
+                <td>All Tables</td>
+                <td>Auto-increment BIGINT</td>
+                <td>Unique identifier for each record</td>
+            </tr>
+            <tr>
+                <td>Foreign Key</td>
+                <td>expenses.user_id</td>
+                <td>CASCADE DELETE</td>
+                <td>Delete expenses when user is deleted</td>
+            </tr>
+            <tr>
+                <td>Foreign Key</td>
+                <td>expenses.category_id</td>
+                <td>SET NULL</td>
+                <td>Set category to null when category is deleted</td>
+            </tr>
+            <tr>
+                <td>Unique</td>
+                <td>users.username</td>
+                <td>UNIQUE</td>
+                <td>Username must be unique across all users</td>
+            </tr>
+            <tr>
+                <td>Unique</td>
+                <td>users.email</td>
+                <td>UNIQUE</td>
+                <td>Email must be unique across all users</td>
+            </tr>
+            <tr>
+                <td>Check</td>
+                <td>expenses.amount</td>
+                <td>> 0</td>
+                <td>Expense amount must be positive</td>
+            </tr>
+            <tr>
+                <td>Check</td>
+                <td>budgets.amount</td>
+                <td>> 0</td>
+                <td>Budget amount must be positive</td>
+            </tr>
+            <tr>
+                <td>Check</td>
+                <td>budget_alerts.threshold</td>
+                <td>0-100</td>
+                <td>Threshold percentage must be between 0-100</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>6.1.4 Database Indexes for Performance</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Table</th>
+                <th>Index Name</th>
+                <th>Columns</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>users</td>
+                <td>idx_users_username</td>
+                <td>username</td>
+                <td>Fast user lookup by username</td>
+            </tr>
+            <tr>
+                <td>users</td>
+                <td>idx_users_email</td>
+                <td>email</td>
+                <td>Fast user lookup by email</td>
+            </tr>
+            <tr>
+                <td>expenses</td>
+                <td>idx_expenses_user_date</td>
+                <td>user_id, date</td>
+                <td>Fast expense queries by user and date range</td>
+            </tr>
+            <tr>
+                <td>expenses</td>
+                <td>idx_expenses_category</td>
+                <td>category_id</td>
+                <td>Fast expense queries by category</td>
+            </tr>
+            <tr>
+                <td>expenses</td>
+                <td>idx_expenses_status</td>
+                <td>status</td>
+                <td>Fast filtering by expense status</td>
+            </tr>
+            <tr>
+                <td>budgets</td>
+                <td>idx_budgets_period</td>
+                <td>start_date, end_date</td>
+                <td>Fast budget queries by date range</td>
+            </tr>
+            <tr>
+                <td>receipts</td>
+                <td>idx_receipts_merchant</td>
+                <td>merchant_name</td>
+                <td>Fast receipt queries by merchant</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>6.2 Data Flow Diagrams</h3>
+    
+    <h4>6.2.1 System Data Flow Overview</h4>
+    <div class="architecture-diagram">
+        <pre>
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   User      │    │  Frontend   │    │  Backend    │
+│  Interface  │◄──►│  React App  │◄──►│ Spring Boot │
+└─────────────┘    └─────────────┘    └─────────────┘
+                           │                   │
+                           │                   │
+                    ┌──────▼──────┐    ┌──────▼──────┐
+                    │   Browser   │    │   H2 DB     │
+                    │   Storage   │    │  In-Memory  │
+                    └─────────────┘    └─────────────┘
+                           │                   │
+                           │                   │
+                    ┌──────▼──────┐    ┌──────▼──────┐
+                    │   Local     │    │   File      │
+                    │   Storage   │    │  Storage    │
+                    └─────────────┘    └─────────────┘
+        </pre>
+    </div>
+
+    <h4>6.2.2 Receipt Processing Data Flow</h4>
+    <div class="architecture-diagram">
+        <pre>
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   User      │    │  Frontend   │    │  Backend    │    │   OCR       │
+│  Uploads    │───►│  Converts   │───►│  Processes  │───►│  Tesseract  │
+│  Receipt    │    │  to Base64  │    │  Image      │    │  Engine     │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+                                                           │
+                                                           ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   User      │◄───│  Frontend   │◄───│  Backend    │◄───│   OCR       │
+│  Reviews    │    │  Displays   │    │  Parses     │    │  Returns    │
+│  Data       │    │  Results    │    │  Text       │    │  Text       │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+        </pre>
+    </div>
+
+    <h4>6.2.3 Expense Management Data Flow</h4>
+    <div class="architecture-diagram">
+        <pre>
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   User      │    │  Frontend   │    │  Backend    │    │  Database   │
+│  Creates    │───►│  Validates  │───►│  Validates  │───►│  Stores     │
+│  Expense    │    │  Form Data  │    │  Business   │    │  Record     │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+                                                           │
+                                                           ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   User      │◄───│  Frontend   │◄───│  Backend    │◄───│  Database   │
+│  Views      │    │  Updates    │    │  Returns    │    │  Returns    │
+│  Updated    │    │  UI         │    │  Success    │    │  Data       │
+│  List       │    │             │    │  Response   │    │             │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+        </pre>
+    </div>
+
+    <h3>6.3 API Design</h3>
+    
+    <h4>6.3.1 REST Endpoints</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Endpoint</th>
+                <th>Description</th>
+                <th>Authentication</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>POST</td>
+                <td>/auth/login</td>
+                <td>User authentication</td>
+                <td>None</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/auth/register</td>
+                <td>User registration</td>
+                <td>None</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/expenses</td>
+                <td>Get expenses with filters</td>
+                <td>Required</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/expenses</td>
+                <td>Create new expense</td>
+                <td>Required</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/expenses/scan-receipt</td>
+                <td>Scan receipt image</td>
+                <td>Required</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/expenses/analytics/spending-by-category</td>
+                <td>Get spending analytics</td>
+                <td>Required</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>6.3 OCR Processing Flow</h3>
+    <ol>
+        <li>User uploads receipt image</li>
+        <li>Image is converted to base64 format</li>
+        <li>Tesseract OCR processes the image</li>
+        <li>Text is extracted and parsed</li>
+        <li>Data is validated and confidence scored</li>
+        <li>Results are returned to user for review</li>
+        <li>User can create expense from extracted data</li>
+    </ol>
+
+    <h2>7. Assumptions and Constraints</h2>
+    
+    <h3>7.1 Technical Assumptions</h3>
+    <ul>
+        <li>Receipt images are clear and readable</li>
+        <li>Users have stable internet connectivity</li>
+        <li>Modern web browsers are used</li>
+        <li>Java 17+ and Node.js 16+ are available</li>
+    </ul>
+
+    <h3>7.2 Constraints</h3>
+    <ul>
+        <li>OCR accuracy depends on image quality</li>
+        <li>H2 database is in-memory (data lost on restart)</li>
+        <li>File upload size limited to 10MB</li>
+        <li>Supported image formats: JPEG, PNG, GIF, BMP</li>
+    </ul>
+
+    <h3>7.3 Dependencies</h3>
+    <ul>
+        <li>Tesseract OCR engine</li>
+        <li>Spring Boot framework</li>
+        <li>React development environment</li>
+        <li>Maven and npm package managers</li>
+    </ul>
+
+    <h2>8. Security Considerations</h2>
+    
+    <h3>8.1 Authentication and Authorization</h3>
+    <ul>
+        <li>JWT-based stateless authentication</li>
+        <li>Password hashing with BCrypt (cost factor 12)</li>
+        <li>Token expiration (24 hours)</li>
+        <li>Role-based access control (future enhancement)</li>
+    </ul>
+
+    <h3>8.2 Data Protection</h3>
+    <ul>
+        <li>HTTPS encryption for all communications</li>
+        <li>Input validation and sanitization</li>
+        <li>SQL injection prevention through JPA</li>
+        <li>XSS protection through React</li>
+    </ul>
+
+    <h3>8.3 Threat Modeling</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Threat</th>
+                <th>Risk Level</th>
+                <th>Mitigation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Unauthorized access</td>
+                <td class="risk-high">High</td>
+                <td>JWT authentication, HTTPS</td>
+            </tr>
+            <tr>
+                <td>Data injection</td>
+                <td class="risk-medium">Medium</td>
+                <td>Input validation, prepared statements</td>
+            </tr>
+            <tr>
+                <td>File upload attacks</td>
+                <td class="risk-medium">Medium</td>
+                <td>File type validation, size limits</td>
+            </tr>
+            <tr>
+                <td>Brute force attacks</td>
+                <td class="risk-low">Low</td>
+                <td>Rate limiting, account lockout</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>9. Testing and Validation</h2>
+    
+    <h3>9.1 Test Strategy</h3>
+    <ul>
+        <li><strong>Unit Tests (70%):</strong> Service layer, utility functions</li>
+        <li><strong>Integration Tests (20%):</strong> Repository, controller endpoints</li>
+        <li><strong>E2E Tests (10%):</strong> Complete user workflows</li>
+    </ul>
+    
+    <h3>9.2 Testing Documentation</h3>
+    <p>Detailed testing plans and strategies are documented in separate files:</p>
+    <ul>
+        <li><a href="UNIT_TESTING_PLAN.md">Unit Testing Plan</a> - Comprehensive unit testing strategy with code examples for backend services and frontend components</li>
+        <li><a href="INTEGRATION_TESTING_PLAN.md">Integration Testing Plan</a> - Component integration testing using TestContainers and real database interactions</li>
+        <li><a href="PERFORMANCE_TESTING_PLAN.md">Performance Testing Plan</a> - Load testing, stress testing, and performance monitoring with JMeter and Lighthouse</li>
+        <li><a href="TESTING_STRATEGY.md">Testing Strategy</a> - Overall testing methodology and quality assurance approach</li>
+    </ul>
+
+    <h3>9.3 Test Coverage Goals</h3>
+    <ul>
+        <li>Backend unit tests: >80% coverage</li>
+        <li>Frontend component tests: >75% coverage</li>
+        <li>API endpoint tests: >90% coverage</li>
+        <li>Critical path E2E tests: >50% coverage</li>
+        <li>Integration tests: >70% backend, >60% frontend</li>
+    </ul>
+
+    <h3>9.4 Performance Testing</h3>
+    <ul>
+        <li>Load testing with 100+ concurrent users</li>
+        <li>OCR processing time benchmarks</li>
+        <li>Database query performance optimization</li>
+        <li>Memory usage monitoring</li>
+        <li>Response time targets: <500ms (95th percentile)</li>
+        <li>Page load time targets: <3 seconds</li>
+    </ul>
+
+    <h2>10. Deployment and Maintenance</h2>
+    
+    <h3>10.1 Deployment Strategy</h3>
+    <ul>
+        <li>Containerized deployment with Docker</li>
+        <li>Blue-green deployment for zero downtime</li>
+        <li>Environment-specific configurations</li>
+        <li>Automated CI/CD pipeline</li>
+    </ul>
+
+    <h3>10.2 Monitoring and Logging</h3>
+    <ul>
+        <li>Application performance monitoring (APM)</li>
+        <li>Error tracking and alerting</li>
+        <li>User activity analytics</li>
+        <li>System health checks</li>
+    </ul>
+
+    <h3>10.3 Backup and Recovery</h3>
+    <ul>
+        <li>Daily automated backups</li>
+        <li>Point-in-time recovery capability</li>
+        <li>Disaster recovery procedures</li>
+        <li>Data retention policies</li>
+    </ul>
+
+    <h2>11. Risks and Mitigations</h2>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Risk</th>
+                <th>Probability</th>
+                <th>Impact</th>
+                <th>Mitigation Strategy</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>OCR accuracy issues</td>
+                <td class="risk-medium">Medium</td>
+                <td class="risk-high">High</td>
+                <td>Manual correction interface, confidence scoring</td>
+            </tr>
+            <tr>
+                <td>Performance degradation</td>
+                <td class="risk-low">Low</td>
+                <td class="risk-medium">Medium</td>
+                <td>Load testing, performance monitoring, scaling</td>
+            </tr>
+            <tr>
+                <td>Security vulnerabilities</td>
+                <td class="risk-low">Low</td>
+                <td class="risk-high">High</td>
+                <td>Regular security audits, penetration testing</td>
+            </tr>
+            <tr>
+                <td>Data loss</td>
+                <td class="risk-low">Low</td>
+                <td class="risk-high">High</td>
+                <td>Automated backups, data validation</td>
+            </tr>
+            <tr>
+                <td>User adoption challenges</td>
+                <td class="risk-medium">Medium</td>
+                <td class="risk-medium">Medium</td>
+                <td>User training, intuitive UI, feedback collection</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>12. Appendices</h2>
+    
+    <h3>12.1 Glossary</h3>
+    <ul>
+        <li><strong>OCR:</strong> Optical Character Recognition - technology to extract text from images</li>
+        <li><strong>JWT:</strong> JSON Web Token - secure method for authentication</li>
+        <li><strong>JPA:</strong> Java Persistence API - ORM framework for database operations</li>
+        <li><strong>REST:</strong> Representational State Transfer - architectural style for web services</li>
+        <li><strong>BCrypt:</strong> Password hashing algorithm for secure storage</li>
+    </ul>
+
+    <h3>12.2 References</h3>
+    <ul>
+        <li>Spring Boot Documentation: https://spring.io/projects/spring-boot</li>
+        <li>React Documentation: https://reactjs.org/docs</li>
+        <li>Tesseract OCR: https://github.com/tesseract-ocr/tesseract</li>
+        <li>JWT Specification: https://tools.ietf.org/html/rfc7519</li>
+    </ul>
+
+    <h3>12.3 Supporting Documents</h3>
+    <ul>
+        <li><a href="API_DOCUMENTATION.md">API Documentation</a> - Comprehensive REST API documentation</li>
+        <li><a href="DATABASE_SCHEMA.md">Database Schema</a> - MySQL database schema and configuration</li>
+        <li><a href="TESTING_STRATEGY.md">Testing Strategy</a> - Overall testing approach and methodology</li>
+        <li><a href="UNIT_TESTING_PLAN.md">Unit Testing Plan</a> - Detailed unit testing strategy and examples</li>
+        <li><a href="INTEGRATION_TESTING_PLAN.md">Integration Testing Plan</a> - Component integration testing approach</li>
+        <li><a href="PERFORMANCE_TESTING_PLAN.md">Performance Testing Plan</a> - Load, stress, and scalability testing</li>
+        <li>User Manual (USER_MANUAL.md)</li>
+    </ul>
+
+    <div style="margin-top: 50px; text-align: center; border-top: 1px solid #ddd; padding-top: 20px;">
+        <p><strong>Document End</strong></p>
+        <p>This design document provides a comprehensive overview of the Expense Tracker with Receipt Scanning system architecture, requirements, and implementation details.</p>
+    </div>
+</body>
+</html> 
